@@ -1,0 +1,7 @@
+.hobo-editable:hover {
+    cursor:pointer;
+    background-color:#bbb;
+    
+    opacity:0.5;
+    filter:Alpha(opacity=50); /* IE8 and earlier */
+}
