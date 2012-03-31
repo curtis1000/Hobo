@@ -1,13 +1,10 @@
 <?php
 
-class Chalkboard_Bootstrap extends ThreeDst_Application_Module_Bootstrap
+class Hobo_Bootstrap extends Zend_Application_Module_Bootstrap
 {
     protected function _initRoutes()
     {
-        $router = $this->getApplication()
-                       ->bootstrap("frontcontroller")
-                       ->getResource("frontcontroller")
-                       ->getRouter();
+        $router = Zend_Controller_Front::getInstance()->getRouter();
 
         $router->addRoute(
             "hobo-ajax-is-admin",

@@ -35,7 +35,15 @@ hobo = {
         });
     },
     
+    editableElements: [],
+    
     editMode: function () {
+        var self = this;
+        
+        if (routeName == undefined || routeName == '') {
+            return self.handleError('routeName must be defined.');
+        }
+
         jQuery('body *').each(function () {
             var classAttr = $(this).attr('class');
             if (classAttr != undefined) {
@@ -46,12 +54,56 @@ hobo = {
                         /* if this class starts with "editable" */
                         var startsWith = 'editable-';
                         if (classes[i].substring(startsWith.length,0) == startsWith) {
-                               var editableIdentifier = classes[i].substring(startsWith.length);
-                               console.log(editableIdentifier);
+                            /* found an editable element, record it*/
+                            var identifier = classes[i].substring(startsWith.length);
+                            self.editableElements.push({identifier: identifier, isGlobal: $(this).hasClass('global')});
+                            /* add class hobo-editable for hover effects */
+                            $(this).addClass('hobo-editable');
+                            $(this).click(function () {
+                                $.colorbox({
+                                    html: '<textarea id="hobo-edit-plain-text">' + $(this).html() + '</textarea>',
+                                    width:"80%",
+                                    height:"80%"
+                                });
+                                
+                                editAreaLoader.init({
+                                    id : "hobo-edit-plain-text",
+                                    syntax: "html",
+                                    start_highlight: true,
+                                    word_wrap: true,
+                                    allow_toggle: false,
+                                    min_width:800,
+                                    toolbar: "search, go_to_line, |, undo, redo, |, help"
+                                
+                                })
+                            });
                         }
                     }
                 }
             }
         });
+        
+        $('.hobo-editable').click(function () {
+            var classes = classAttr.split(' ');
+            for (i=0; i<classes.length; i++) {
+                /* if this class starts with "editable" */
+                var startsWith = 'editable-';
+                if (classes[i].substring(startsWith.length,0) == startsWith) {
+                    /* found an editable element, record it*/
+                    var identifier = classes[i].substring(startsWith.length);
+                    self.editableElements.push({identifier: identifier, isGlobal: $(this).hasClass('global')});
+                    /* add class hobo-editable for hover effects */
+                    $(this).addClass('hobo-editable');
+                }
+            }                
+        });
+    },
+    
+    editSomething: function (identifier) {
+        
+    },
+    
+    handleError: function (message) {
+        alert(message);
     }
 };
