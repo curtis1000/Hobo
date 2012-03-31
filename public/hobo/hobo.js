@@ -65,17 +65,22 @@ hobo = {
                                     width:"80%",
                                     height:"80%"
                                 });
-                                
-                                editAreaLoader.init({
-                                    id : "hobo-edit-plain-text",
-                                    syntax: "html",
-                                    start_highlight: true,
-                                    word_wrap: true,
-                                    allow_toggle: false,
-                                    min_width:800,
-                                    toolbar: "search, go_to_line, |, undo, redo, |, help"
-                                
-                                })
+                                /* Since colorbox is a percentage of the viewport,
+                                 * and editArea needs pixels, lets calculate width.
+                                 * Must be done after the cbox_complete event.
+                                 */
+                                $(document).bind('cbox_complete', function(){                                   
+                                    editAreaLoader.init({
+                                        id : "hobo-edit-plain-text",
+                                        syntax: "html",
+                                        start_highlight: true,
+                                        word_wrap: true,
+                                        allow_toggle: false,
+                                        min_width:$('#cboxContent').width(),
+                                        min_height:$('#cboxContent').height() - 50,
+                                        toolbar: "search, go_to_line, |, undo, redo, |, help"
+                                    });
+                                });
                             });
                         }
                     }
