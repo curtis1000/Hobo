@@ -17,5 +17,17 @@ class Hobo_Bootstrap extends Zend_Application_Module_Bootstrap
                 )
             )
         );
+        
+        $router->addRoute(
+            "hobo-ajax-save",
+            new Zend_Controller_Router_Route(
+                "/hobo/ajax/save",
+                array(
+                    "module"     => "hobo",
+                    "controller" => "ajax",
+                    "action"     => "save",
+                )
+            )
+        );
     }
 }
