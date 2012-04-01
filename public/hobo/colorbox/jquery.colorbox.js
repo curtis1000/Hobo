@@ -367,6 +367,9 @@
 				$cancel.click(function () {
 					publicMethod.cancel();
 				});
+				$save.click(function () {
+					publicMethod.save();
+				});
 				$overlay.click(function () {
 					if (settings.overlayClose) {
 						publicMethod.cancel();
@@ -840,6 +843,10 @@
 		}
 	};
 
+	publicMethod.close = function () {
+	    publicMethod.cancel();    
+	};
+
 	// Note: to use this within an iframe use the following format: parent.$.fn.colorbox.cancel();
 	publicMethod.cancel = function () {
 		if (open && !closing) {
@@ -868,6 +875,10 @@
 				}, 1);
 			});
 		}
+	};
+
+	publicMethod.save = function () {
+	    hobo.save();
 	};
 
 	// Removes changes ColorBox made to the document, but does not remove the plugin
