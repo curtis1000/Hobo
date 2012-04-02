@@ -2,6 +2,13 @@
 
 class Hobo_Bootstrap extends Zend_Application_Module_Bootstrap
 {
+    protected function _initPlugins()
+    {
+        $loader = new Zend_Loader_PluginLoader();    
+        $front = Zend_Controller_Front::getInstance();
+        $front->registerPlugin(new Hobo_Controller_Plugin_Output());
+    }
+    
     protected function _initRoutes()
     {
         $router = Zend_Controller_Front::getInstance()->getRouter();
