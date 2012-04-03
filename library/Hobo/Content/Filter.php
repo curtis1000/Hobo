@@ -9,8 +9,8 @@
 class Hobo_Content_Filter
 {
     protected $_input = '';
-    protected static $EditableClassPrefix = 'editable-';
-    protected static $XpathQueryAnyElementWithAClass = '//*[@class]';
+    protected static $EditableDataPrefix = 'data-';
+    protected static $XpathQueryAnyElementWithADataAttr = "//*[@*[starts-with(name(.), 'data-')]]";
     
     public function setInput($value)
     {
@@ -24,8 +24,9 @@ class Hobo_Content_Filter
         @$domDoc->loadHTML($this->_input);
         $editableElements = $this->findEditableElements($domDoc);
         
-        foreach ($editableElements as $element) {
-            
+        foreach ($editableElements as $elementArray) {
+            $element = $elementArray['element'];
+                
             // query database for content
             $content = 'query results placeholder';
             
@@ -40,32 +41,63 @@ class Hobo_Content_Filter
                $element->appendChild($fragment);               
             }
         }
+
         return $domDoc->saveHTML();
     }
     
+    /**
+     * Finds Editable Elements
+     * 
+     * @param  object $domDoc
+     * @return array  $editableElements
+     */
     protected function findEditableElements($domDoc)
     {
         $domXpath = new DOMXPath($domDoc);
         $editableElements = array();
         
-        // query any elements that have a class attribute
-        $elements = $domXpath->query(self::$XpathQueryAnyElementWithAClass);
+        /**
+         * Queries Any Element With The HTML5 Data Attribute
+         */
+        $elements = $domXpath->query(self::$XpathQueryAnyElementWithADataAttr);
     
         if ($elements instanceof DOMNodeList) {
-            foreach ($elements as $element) {
-                // element is a DOMElement
-                $classAttr = $element->getAttribute('class');
-                $classes = explode(' ', $classAttr);
 
-                foreach ($classes as $class) {
-                    if (substr($class, 0, strlen(self::$EditableClassPrefix))
-                        == self::$EditableClassPrefix) {
-                        $editableElements[] = $element;
+            /**
+             * Loops Through The ELements
+             */
+            foreach ($elements as $element) {
+
+                /**
+                 * Checks If The Element Has Attributes
+                 */
+                if ($element->hasAttributes()) {
+                    $options = array();
+
+                    /**
+                     * Loops Through All of The Elements Attributes
+                     */
+                    foreach ($element->attributes as $attr) {
+
+                        /**
+                         * Gets The Attributes That Contain The Prefix
+                         */
+                        if (substr($attr->nodeName, 0, strlen(self::$EditableDataPrefix)) == self::$EditableDataPrefix) {
+                            $options[$attr->nodeName] = $attr->nodeValue;
+                        }
                     }
+
+                    /**
+                     * Creates The Data Array
+                     */
+                    $editableElements[] = array(
+                        'element' => $element,
+                        'options' => $options,
+                    );
                 }
             }
         }
-        
+
         return $editableElements;
     }
 }
