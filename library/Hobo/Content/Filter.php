@@ -8,25 +8,47 @@
  */
 class Hobo_Content_Filter
 {
+    /**
+     * Response Body
+     */
     protected $_input = '';
-    protected static $EditableDataPrefix = 'data-';
-    protected static $XpathQueryAnyElementWithADataAttr = "//*[@*[starts-with(name(.), 'data-')]]";
+
+    /**
+     * XPath Query
+     */
+    protected static $XpathQuery = '//*[@data-hobo]';
+
+    /**
+     * Query Attribute
+     */
+    protected static $attrQuery = 'data-hobo';
     
+    /**
+     * Gets The Response Body From The DispatchLoopShutdown()
+     * 
+     * @param  string $value
+     * @return object $this
+     */
     public function setInput($value)
     {
         $this->_input = $value;
         return $this;
     }
 
+    /**
+     * Filters The Response Body
+     * 
+     * @return string
+     */
     public function filter()
     {
         $domDoc = new DOMDocument();
         @$domDoc->loadHTML($this->_input);
         $editableElements = $this->findEditableElements($domDoc);
         
-        foreach ($editableElements as $elementArray) {
-            $element = $elementArray['element'];
-                
+        foreach ($editableElements as $value) {
+            $element = $value['element'];
+            
             // query database for content
             $content = 'query results placeholder';
             
@@ -46,58 +68,35 @@ class Hobo_Content_Filter
     }
     
     /**
-     * Finds Editable Elements
+     * Finds All Editable Elements
      * 
      * @param  object $domDoc
-     * @return array  $editableElements
+     * @return array $editableElements
      */
     protected function findEditableElements($domDoc)
     {
-        $domXpath = new DOMXPath($domDoc);
         $editableElements = array();
+        $domXpath = new DOMXPath($domDoc);
         
         /**
-         * Queries Any Element With The HTML5 Data Attribute
+         * Finds All of The Editable Elements
          */
-        $elements = $domXpath->query(self::$XpathQueryAnyElementWithADataAttr);
-    
+        $elements = $domXpath->query(self::$XpathQuery);
+        
         if ($elements instanceof DOMNodeList) {
-
-            /**
-             * Loops Through The ELements
-             */
             foreach ($elements as $element) {
-
                 /**
-                 * Checks If The Element Has Attributes
+                 * Gets Attributes Values
                  */
-                if ($element->hasAttributes()) {
-                    $options = array();
+                $dataAttr = $element->getAttribute(self::$attrQuery);
 
-                    /**
-                     * Loops Through All of The Elements Attributes
-                     */
-                    foreach ($element->attributes as $attr) {
-
-                        /**
-                         * Gets The Attributes That Contain The Prefix
-                         */
-                        if (substr($attr->nodeName, 0, strlen(self::$EditableDataPrefix)) == self::$EditableDataPrefix) {
-                            $options[$attr->nodeName] = $attr->nodeValue;
-                        }
-                    }
-
-                    /**
-                     * Creates The Data Array
-                     */
-                    $editableElements[] = array(
-                        'element' => $element,
-                        'options' => $options,
-                    );
-                }
+                $editableElements[] = array(
+                    'element' => $element,
+                    'data'    => $dataAttr,
+                );
             }
         }
-
+        
         return $editableElements;
     }
 }
