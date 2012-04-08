@@ -48,18 +48,27 @@ class Hobo_Content_Filter
         
         foreach ($editableElements as $value) {
             $element = $value['element'];
-            
+            $data = $value['data'];
+
             // query database for content
-            $content = 'query results placeholder';
+            $contentTable = new Hobo_Db_Table_Content();
+            $select = $contentTable->select()
+                                   ->where('isGlobal = ?', ($data->isGlobal) ? 1 : 0)
+                                   ->where('routeName = ?', Zend_Controller_Front::getInstance()->getRouter()->getCurrentRouteName())
+                                   ->where('handle = ?', $data->handle)
+                                   ->order('id desc')
+                                   ->limit(1);
+
+            $row = $contentTable->fetchRow($select);
             
-            if (! empty($content)) {
+            if (! empty($row->content)) {
                 // remove any children
                while ($element->hasChildNodes()){
                    $element->removeChild($element->childNodes->item(0));
                }              
                // inject content
                $fragment = $domDoc->createDocumentFragment(); // create fragment
-               $fragment->appendXML($content); 
+               $fragment->appendXML($row->content);
                $element->appendChild($fragment);               
             }
         }
@@ -92,7 +101,7 @@ class Hobo_Content_Filter
 
                 $editableElements[] = array(
                     'element' => $element,
-                    'data'    => $dataAttr,
+                    'data'    => json_decode($dataAttr),
                 );
             }
         }

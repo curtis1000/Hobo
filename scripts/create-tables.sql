@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS `hobo_content` (
   `handle` varchar(255) NOT NULL,
   `content` text,
   `revision` int(11) NOT NULL,
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `revision` (`revision`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;

@@ -11,7 +11,7 @@ class Hobo_AjaxController extends Hobo_Controller_Action
     {
         $routeName  = $this->_getParam('routeName', 'public-home');
         $handle     = $this->_getParam('handle', 'main');
-        $isGlobal   = (int) $this->_getParam('isGlobal', 0);
+        $isGlobal   = ($this->_getParam('isGlobal', 0) == 'true') ? 1 : 0; // looks like the boolean comes through as string
         $content    = $this->_getParam('content', '');
         
         $revision = $this->_helper->revision->getNext($routeName, $handle, $isGlobal);

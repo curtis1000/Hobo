@@ -23,17 +23,14 @@ hobo = {
     
     isAdmin: function () {
         var self = this;
-        
         /* include the admin control panel */
-        controlPanel = '' +
+        var controlPanel = '' +
             '<div class="hobo-control-panel">' +
                 '<a class="hobo-control-panel-edit">Edit</a>' +
             '</div>';
-        
         jQuery('body').prepend(controlPanel);
-        
         /* control panel listeners */
-        $controlPanel = jQuery('.hobo-control-panel');
+        var $controlPanel = jQuery('.hobo-control-panel');
         $controlPanel.find('.hobo-control-panel-edit').live('click', function () {
             self.editMode();
         });
@@ -43,51 +40,48 @@ hobo = {
     
     editMode: function () {
         var self = this;
-
         jQuery('body *').each(function () {
-            var classAttr = $(this).attr('class');
-            if (classAttr != undefined) {
-                if (classAttr.indexOf('editable') !== -1) {
-                    /* if there are multiple classes */
-                    var classes = classAttr.split(' ');
-                    for (i=0; i<classes.length; i++) {
-                        /* if this class starts with "editable" */
-                        var startsWith = 'editable-';
-                        if (classes[i].substring(startsWith.length,0) == startsWith) {
-                            /* ex: editable-sidebar, the line below sets handle = 'sidebar' */
-                            var handle = classes[i].substring(startsWith.length);
-                            /* add class hobo-editable for hover effects */
-                            $(this).addClass('hobo-editable');
-                            $(this).click(function () {
-                                /* save method will reference this data */
-                                var isGlobal = ($(this).hasClass('global')) ? 1 : 0;
-                                self.elementBeingEdited = {routeName: routeName, handle: handle, isGlobal: isGlobal};
-                                console.log(self.elementBeingEdited );
-                                $.colorbox({
-                                    html: '<textarea id="hobo-edit-plain-text">' + $(this).html() + '</textarea>',
-                                    width:"80%",
-                                    height:"80%"
-                                });
-                                /* Since colorbox is a percentage of the viewport,
-                                 * and editArea needs pixels, lets calculate the modal size.
-                                 * Must be done after the cbox_complete event.
-                                 */
-                                $(document).bind('cbox_complete', function(){                                   
-                                    editAreaLoader.init({
-                                        id : "hobo-edit-plain-text",
-                                        syntax: "html",
-                                        start_highlight: true,
-                                        word_wrap: true,
-                                        allow_toggle: false,
-                                        min_width:$('#cboxContent').width(),
-                                        min_height:$('#cboxContent').height() - 50,
-                                        toolbar: "search, go_to_line, |, undo, redo, |, help"
-                                    });
+            var dataHoboJSON = $(this).attr('data-hobo');
+            if (dataHoboJSON != undefined) {
+                try {
+                    var dataHobo = eval('(' + dataHoboJSON + ')');
+                    if (typeof dataHobo == 'object') {
+                        /* add class hobo-editable for hover effects */
+                        $(this).addClass('hobo-editable');
+                        /* add click handler */
+                        $(this).click(function () {
+                            /* add routeName, needed for database */
+                            dataHobo.routeName = routeName;
+                            /* save method will reference this data */
+                            self.elementBeingEdited = dataHobo;
+                            $.colorbox({
+                                html: '<textarea id="hobo-edit-plain-text">' + $(this).html() + '</textarea>',
+                                width:"80%",
+                                height:"80%"
+                            });
+                            /* Since colorbox is a percentage of the viewport,
+                             * and editArea needs pixels, lets calculate the modal size.
+                             * Must be done after the cbox_complete event.
+                             */
+                            $(document).bind('cbox_complete', function(){
+                                editAreaLoader.init({
+                                    id : "hobo-edit-plain-text",
+                                    syntax: "html",
+                                    start_highlight: true,
+                                    word_wrap: true,
+                                    allow_toggle: false,
+                                    min_width:$('#cboxContent').width(),
+                                    min_height:$('#cboxContent').height() - 50,
+                                    toolbar: "search, go_to_line, |, undo, redo, |, help"
                                 });
                             });
-                        }
+                        });
+                    } else {
+                        self.handleError("data-hobo attribute contains valid javascript, but is not an object.");
                     }
-                }
+                } catch (error) {
+                    self.handleError("data-hobo attribute does not contain valid javascript: " + error);
+                }               
             }
         });
     },
@@ -99,12 +93,11 @@ hobo = {
     save: function () {
         var self = this;
         self.elementBeingEdited.content = editAreaLoader.getValue("hobo-edit-plain-text");
-        
-        $.post(baseUrl + '/hobo/ajax/save', self.elementBeingEdited, function (response) {
+        console.log(self.elementBeingEdited);
+        $.post(baseUrl + '/hobo/ajax/save', self.elementBeingEdited, function (response) { console.log(response);
             if (response == true) {
                 /* update the page */
-                $selector = $('.editable-' + self.elementBeingEdited.handle);
-                $selector.html(self.elementBeingEdited.content);
+                jQuery('[data-hobo*=' + self.elementBeingEdited.handle + ']').html(self.elementBeingEdited.content);
                 /* clean up */
                 self.elementBeingEdited = null;
             } else {
@@ -113,7 +106,7 @@ hobo = {
             $.colorbox.close();
         });
     },
-    
+
     handleError: function (message) {
         alert(message);
     }
