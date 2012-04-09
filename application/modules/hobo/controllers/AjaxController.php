@@ -28,4 +28,18 @@ class Hobo_AjaxController extends Hobo_Controller_Action
         
         $this->_helper->json(true);
     }
+
+    public function selectLatestAction()
+    {
+        // query database for content
+        $data = new stdClass;
+        $data->isGlobal     = $this->_getParam('isGlobal');
+        $data->routeName    = $this->_getParam('routeName');
+        $data->handle       = $this->_getParam('handle');
+
+        $contentTable = new Hobo_Db_Table_Content();
+        $row = $contentTable->selectLatest($data);
+        $rowArray = $row->toArray();
+        $this->_helper->json($rowArray);
+    }
 }

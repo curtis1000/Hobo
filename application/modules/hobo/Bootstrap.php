@@ -4,7 +4,6 @@ class Hobo_Bootstrap extends Zend_Application_Module_Bootstrap
 {
     protected function _initPlugins()
     {
-        $loader = new Zend_Loader_PluginLoader();    
         $front = Zend_Controller_Front::getInstance();
         $front->registerPlugin(new Hobo_Controller_Plugin_Output());
     }
@@ -33,6 +32,18 @@ class Hobo_Bootstrap extends Zend_Application_Module_Bootstrap
                     "module"     => "hobo",
                     "controller" => "ajax",
                     "action"     => "save",
+                )
+            )
+        );
+
+        $router->addRoute(
+            "hobo-ajax-select-latest",
+            new Zend_Controller_Router_Route(
+                "/hobo/ajax/select-latest",
+                array(
+                    "module"     => "hobo",
+                    "controller" => "ajax",
+                    "action"     => "select-latest",
                 )
             )
         );

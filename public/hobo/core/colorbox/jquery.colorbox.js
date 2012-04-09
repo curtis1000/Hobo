@@ -32,7 +32,7 @@
         previous: "previous",
         next: "next",
         cancel: "cancel",
-	save: "save",
+	    preview: "preview",
         open: false,
         returnFocus: true,
         reposition: true,
@@ -96,7 +96,7 @@
     $next,
     $prev,
     $cancel,
-    $save,
+    $preview,
     $groupControls,
     
     // Variables for cached values or use across multiple functions
@@ -287,7 +287,7 @@
 				$groupControls.add($title).hide();
 				
 				$cancel.html(settings.cancel).show();
-				$save.html(settings.save).show();
+				$preview.html(settings.preview).show();
 			}
 			
 			publicMethod.load(true);
@@ -313,7 +313,7 @@
 				$prev = $tag(div, "Previous"),
 				$slideshow = $tag(div, "Slideshow").bind(event_open, slideshow),
 				$cancel = $tag(div, "Cancel"),
-				$save = $tag(div, "Save")
+				$preview = $tag(div, "Preview")
 			);
 			
 			$wrap.append( // The 3x3 Grid that makes up ColorBox
@@ -367,8 +367,8 @@
 				$cancel.click(function () {
 					publicMethod.cancel();
 				});
-				$save.click(function () {
-					publicMethod.save();
+				$preview.click(function () {
+					publicMethod.preview();
 				});
 				$overlay.click(function () {
 					if (settings.overlayClose) {
@@ -877,8 +877,8 @@
 		}
 	};
 
-	publicMethod.save = function () {
-	    hobo.save();
+	publicMethod.preview = function () {
+	    hobo.core.preview();
 	};
 
 	// Removes changes ColorBox made to the document, but does not remove the plugin

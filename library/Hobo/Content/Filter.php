@@ -52,14 +52,8 @@ class Hobo_Content_Filter
 
             // query database for content
             $contentTable = new Hobo_Db_Table_Content();
-            $select = $contentTable->select()
-                                   ->where('isGlobal = ?', ($data->isGlobal) ? 1 : 0)
-                                   ->where('routeName = ?', Zend_Controller_Front::getInstance()->getRouter()->getCurrentRouteName())
-                                   ->where('handle = ?', $data->handle)
-                                   ->order('id desc')
-                                   ->limit(1);
-
-            $row = $contentTable->fetchRow($select);
+            $data->routeName = Zend_Controller_Front::getInstance()->getRouter()->getCurrentRouteName();
+            $row = $contentTable->selectLatest($data);
             
             if (! empty($row->content)) {
                 // remove any children
