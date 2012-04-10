@@ -18,5 +18,6 @@ class Hobo_Controller_Plugin_PlainText extends Zend_Controller_Plugin_Abstract
         }
         $view = $viewRenderer->view;
         $view->headScript()->appendFile($view->baseUrl() . '/hobo/plain-text/hobo-plain-text.js');
+        $view->headScript()->appendFile($view->baseUrl() . '/hobo/plain-text/editarea/edit_area/edit_area_full.js');
     }
 }
