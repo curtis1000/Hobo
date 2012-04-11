@@ -52,7 +52,7 @@ class Hobo_Content_Filter
 
             // query database for content
             $contentTable = new Hobo_Db_Table_Content();
-            $data->routeName = Zend_Controller_Front::getInstance()->getRouter()->getCurrentRouteName();
+            $data['routeName'] = Zend_Controller_Front::getInstance()->getRouter()->getCurrentRouteName();
             $row = $contentTable->selectLatest($data);
             
             if (! empty($row->content)) {
@@ -95,7 +95,7 @@ class Hobo_Content_Filter
 
                 $editableElements[] = array(
                     'element' => $element,
-                    'data'    => json_decode($dataAttr),
+                    'data'    => (array) json_decode($dataAttr),
                 );
             }
         }

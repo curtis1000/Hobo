@@ -126,27 +126,32 @@ hobo.core = {
      */
     preview: function () {
         var self = this;
-        var content = hobo.plainText.getcontent();
-        self.elementBeingEdited.content = content;
-        /* if an instance of this handle already exists in saveQueue, delete it, we are about to add an updated version */
-        for (i=0; i<self.saveQueue.length; i++) {
-            if (self.saveQueue[i].handle == self.elementBeingEdited.handle) {
-                self.saveQueue.splice(i, 1);
+        /* create a generic reference to the plugin for the given content type */
+        /* example: hobo.plugin might now reference hobo.plainText */
+        hobo.plugin = eval('hobo.' + self.elementBeingEdited.contentType);
+        if (typeof hobo.plugin == 'object') {
+            var content = hobo.plugin.getcontent();
+            self.elementBeingEdited.content = content;
+            /* if an instance of this handle already exists in saveQueue, delete it, we are about to add an updated version */
+            for (i=0; i<self.saveQueue.length; i++) {
+                if (self.saveQueue[i].handle == self.elementBeingEdited.handle) {
+                    self.saveQueue.splice(i, 1);
+                }
             }
+            /* make a deep copy of elementBeingEdited, store in saveQueue */
+            var temp = {};
+            jQuery.extend(true, temp, self.elementBeingEdited);
+            self.saveQueue.push(temp);
+            /* update the page */
+            var previewHtml = hobo.plugin.display(content);
+            jQuery('[data-hobo*=' + self.elementBeingEdited.handle + ']').html(previewHtml);
+            /* clean up */
+            self.elementBeingEdited = null;
+            /* close modal */
+            jQuery.colorbox.close();
+            /* redraw control panel */
+            self.drawControlPanel();
         }
-        /* make a deep copy of elementBeingEdited, store in saveQueue */
-        var temp = {};
-        jQuery.extend(true, temp, self.elementBeingEdited);
-        self.saveQueue.push(temp);
-        /* update the page */
-        var previewHtml = hobo.plainText.display(content);
-        jQuery('[data-hobo*=' + self.elementBeingEdited.handle + ']').html(previewHtml);
-        /* clean up */
-        self.elementBeingEdited = null;
-        /* close modal */
-        jQuery.colorbox.close();
-        /* redraw control panel */
-        self.drawControlPanel();
     },
 
     /* send save queue to backend via ajax */
