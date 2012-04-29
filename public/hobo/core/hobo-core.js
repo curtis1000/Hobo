@@ -54,14 +54,16 @@ hobo.core = {
         /* include the admin control panel */
         var controlPanel = '' +
             '<div class="hobo-control-panel">' +
-                '<a class="hobo-control-panel-edit">Edit</a> ';
+                '<div class="hobo-control-panel-left-buttons">' +
+                    '<a class="hobo-control-panel-edit">Edit</a> ';
 
         if (self.saveQueue.length > 0) {
             controlPanel += '' +
-                '<a class="hobo-control-panel-save">Save</a>';
+                    '<a class="hobo-control-panel-save">Save</a>';
         }
 
         controlPanel += '' +
+                '</div>' +
             '</div>';
 
         /* remove cp if it already exists */
