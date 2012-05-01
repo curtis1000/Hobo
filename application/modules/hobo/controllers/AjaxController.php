@@ -33,7 +33,12 @@ class Hobo_AjaxController extends Hobo_Controller_Action
 
         $contentTable = new Hobo_Db_Table_Content();
         $row = $contentTable->selectLatest($params);
-        $rowArray = $row->toArray();
+        if ($row instanceof Hobo_Db_Table_Row_Content) {
+            $rowArray = $row->toArray();
+        } else {
+            // no result, send back empty array
+            $rowArray = array();
+        }
         $this->_helper->json($rowArray);
     }
 }

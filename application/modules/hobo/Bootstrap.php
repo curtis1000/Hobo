@@ -47,5 +47,29 @@ class Hobo_Bootstrap extends Zend_Application_Module_Bootstrap
                 )
             )
         );
+
+        $router->addRoute(
+            "hobo-installer",
+            new Zend_Controller_Router_Route(
+                "/hobo/installer",
+                array(
+                    "module"     => "hobo",
+                    "controller" => "installer",
+                    "action"     => "index",
+                )
+            )
+        );
+
+        $router->addRoute(
+            "hobo-installer-installed",
+            new Zend_Controller_Router_Route(
+                "/hobo/installer/installed",
+                array(
+                    "module"     => "hobo",
+                    "controller" => "installer",
+                    "action"     => "installed",
+                )
+            )
+        );
     }
 }

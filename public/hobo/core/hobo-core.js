@@ -5,8 +5,17 @@ var baseUrl = baseUrl || "";
 
 $(function () {
     hobo.core.init();
-});    
-    
+});
+
+/* http://stackoverflow.com/questions/2419749/get-selected-elements-outer-html
+ * We need this in order to set a selector that the content type js files can use
+ */
+jQuery.fn.outerHTML = function(s) {
+    return s
+        ? this.before(s).remove()
+        : jQuery("<p>").append(this.eq(0).clone()).html();
+};
+
 hobo.core = {
 
     /* data object that tracks what the user is currently editing */
@@ -20,6 +29,8 @@ hobo.core = {
 
     /* plugin will be set per editable area, provides a generic way to access content type interface methods */
     plugin: {},
+
+    isEditMode: false,
 
     init: function () {
         var self = this;
@@ -42,10 +53,19 @@ hobo.core = {
         /* control panel listeners */
         var $controlPanel = jQuery('.hobo-control-panel');
         $controlPanel.find('.hobo-control-panel-edit').live('click', function () {
-            self.editMode();
+            if (! self.isEditMode) {
+                self.enterEditMode();
+            } else {
+                self.exitEditMode();
+            }
         });
         $controlPanel.find('.hobo-control-panel-save').live('click', function () {
             self.save();
+        });
+        $controlPanel.find('.hobo-control-panel-discard').live('click', function () {
+            /* simplest method to discard edits is to reload page */
+            window.location.reload();
+            /* should this be updated to reset all editable areas via ajax? */
         });
     },
 
@@ -54,16 +74,17 @@ hobo.core = {
         /* include the admin control panel */
         var controlPanel = '' +
             '<div class="hobo-control-panel">' +
-                '<div class="hobo-control-panel-left-buttons">' +
-                    '<a class="hobo-control-panel-edit">Edit</a> ';
-
-        if (self.saveQueue.length > 0) {
-            controlPanel += '' +
-                    '<a class="hobo-control-panel-save">Save</a>';
-        }
-
-        controlPanel += '' +
-                '</div>' +
+                '<a class="hobo-control-panel-edit">' +
+                    '<img src="' + baseUrl + '/hobo/core/icons/edit.png" />' +
+                '</a> ' +
+                '<br />' +
+                '<a class="hobo-control-panel-save">' +
+                    '<img src="' + baseUrl + '/hobo/core/icons/save.png" />' +
+                '</a>'+
+                '<br />' +
+                '<a class="hobo-control-panel-discard">' +
+                    '<img src="' + baseUrl + '/hobo/core/icons/discard.png" />' +
+                '</a>'+
             '</div>';
 
         /* remove cp if it already exists */
@@ -71,13 +92,21 @@ hobo.core = {
             jQuery('.hobo-control-panel').remove();
         }
 
-        jQuery('body').prepend(controlPanel);
+        jQuery('body').append(controlPanel);
+
+        /* icon treatments */
+        if (! self.isEditMode) {
+            $('.hobo-control-panel-edit').addClass('inactive');
+        }
+        if (self.saveQueue.length === 0) {
+            $('.hobo-control-panel-save').addClass('inactive');
+            $('.hobo-control-panel-discard').addClass('inactive');
+        }
     },
 
-    editMode: function () {
+    enterEditMode: function () {
         var self = this;
-        /* show save button in admin bar */
-        jQuery('.hobo-control-panel-save').show();
+        self.isEditMode = true;
 
         jQuery('body *').each(function () {
             var dataHoboJSON = jQuery(this).attr('data-hobo');
@@ -88,11 +117,14 @@ hobo.core = {
                         /* add class hobo-editable for hover effects */
                         jQuery(this).addClass('hobo-editable');
                         /* add click handler */
-                        jQuery(this).click(function () {
+                        jQuery(this).click(function (event) {
+                            event.preventDefault();
                             /* add routeName, needed for database */
                             dataHobo.routeName = routeName;
                             /* save method will reference this data, done referencing dataHobo at this point */
                             self.elementBeingEdited = dataHobo;
+                            /* Using literal html as the selector, can't set $(this) and reference it in plugin file */
+                            self.elementBeingEdited.$selector = jQuery(this).outerHTML();
                             /* create a generic reference to the plugin for the given content type */
                             /* example: hobo.plugin might now reference hobo.plainText */
                             hobo.plugin = eval('hobo.' + self.elementBeingEdited.contentType);
@@ -121,6 +153,14 @@ hobo.core = {
                 }               
             }
         });
+        self.drawControlPanel();
+    },
+
+    exitEditMode: function () {
+        var self = this;
+        self.isEditMode = false;
+        jQuery('.hobo-editable').unbind('click').removeClass('hobo-editable');
+        self.drawControlPanel();
     },
     
     /* preview is called from colorbox, which has no knowledge of which content is being edited,
@@ -168,7 +208,7 @@ hobo.core = {
                     /* if all items have been saved */
                     if (self.saveQueue.length == 0) {
                         /* confirm it to user */
-                        alert('changes saved!');
+                        self.exitEditMode();
                     }
                 } else {
                     self.handleError('There was a problem saving content.');

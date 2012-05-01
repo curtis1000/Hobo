@@ -12,11 +12,12 @@ hobo.plainText = {
         /* What content should be loaded into the editor?
          * - If there is data in the saveQueue, use that
          * - Else, query db
+         * - Else innerHTML of editable element (first time edit)
          */
         var content;
         for (i=0; i<hobo.core.saveQueue.length; i++) {
             if (hobo.core.saveQueue[i].handle == hobo.core.elementBeingEdited.handle) {
-                content = hobo.core.saveQueue[i].content;
+                content = jQuery.trim(hobo.core.saveQueue[i].content);
             }
         }
 
@@ -27,7 +28,14 @@ hobo.plainText = {
                 url: baseUrl + '/hobo/ajax/select-latest',
                 data: hobo.core.elementBeingEdited,
                 success: function (response) {
-                    content = response.content;
+                    // if there was a database query result
+                    if (response.content != undefined) {
+                        content = jQuery.trim(response.content);
+                    } else {
+                        // default to html on page
+                        content = jQuery(hobo.core.elementBeingEdited.$selector).html().trim();
+                    }
+
                 }
             });
         }

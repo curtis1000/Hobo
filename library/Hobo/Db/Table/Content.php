@@ -5,6 +5,23 @@ class Hobo_Db_Table_Content extends Hobo_Db_Table
     protected $_name = 'hobo_content';
     protected $_rowClass = 'Hobo_Db_Table_Row_Content';
 
+    public function create()
+    {
+        $this->getAdapter()->query("
+              CREATE TABLE IF NOT EXISTS `hobo_content` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `isGlobal` tinyint(4) NOT NULL DEFAULT '0',
+              `routeName` varchar(128) DEFAULT NULL,
+              `handle` varchar(255) NOT NULL,
+              `content` text,
+              `revision` int(11) NOT NULL,
+              `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              PRIMARY KEY (`id`),
+              KEY `revision` (`revision`)
+            ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+        ");
+    }
+
     /**
      * @param $params
      * @return null|Zend_Db_Table_Row_Abstract
@@ -12,9 +29,7 @@ class Hobo_Db_Table_Content extends Hobo_Db_Table
     public function selectLatest($params)
     {
         $select = $this->select()
-                       // just in case isGlobal wasn't filtered in the controller (coming from ajax req),
-                       // is_string is necessary, cause 0 == "anything" is true
-                       ->where('isGlobal = ?', ($params['isGlobal'] === true || is_string($params['isGlobal']) && $params['isGlobal'] == 'true') ? 1 : 0)
+                       ->where('isGlobal = ?', $params['isGlobal'])
                        ->where('routeName = ?', $params['routeName'])
                        ->where('handle = ?', $params['handle'])
                        ->order('id desc')

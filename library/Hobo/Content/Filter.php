@@ -50,6 +50,9 @@ class Hobo_Content_Filter
             $element = $value['element'];
             $data = $value['data'];
 
+            // filter boolean for mysql
+            $data['isGlobal'] = ($data['isGlobal']) ? 1 : 0;
+
             // query database for content
             $contentTable = new Hobo_Db_Table_Content();
             $data['routeName'] = Zend_Controller_Front::getInstance()->getRouter()->getCurrentRouteName();
