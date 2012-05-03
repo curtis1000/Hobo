@@ -32,6 +32,9 @@ hobo.core = {
 
     isEditMode: false,
 
+    $controlPanel: null,
+    controlPanelLeft: true,
+
     init: function () {
         var self = this;
         if (jQuery != undefined) {
@@ -40,59 +43,73 @@ hobo.core = {
                     if (routeName != undefined && routeName != '') {
                         self.initAdmin();
                     } else {
-                        self.handleError('var routeName must be defined');    
-                    }                    
-                } 
-            });    
-        }    
+                        self.handleError('var routeName must be defined');
+                    }
+                }
+            });
+        }
     },
-    
+
     initAdmin: function () {
         var self = this;
+        
+        /* create control panel container */
+        
+        self.initControlPanel();
         self.drawControlPanel();
-        /* control panel listeners */
-        var $controlPanel = jQuery('.hobo-control-panel');
-        $controlPanel.find('.hobo-control-panel-edit').live('click', function () {
+        
+        /* bind control panel listeners */
+        self.$controlPanel.find('.hobo-control-panel-edit').live('click', function () {
             if (! self.isEditMode) {
                 self.enterEditMode();
             } else {
                 self.exitEditMode();
             }
         });
-        $controlPanel.find('.hobo-control-panel-save').live('click', function () {
-            self.save();
+        self.$controlPanel.find('.hobo-control-panel-save').live('click', function () {
+            if (self.saveQueue.length > 0) {
+                self.save();
+            }
         });
-        $controlPanel.find('.hobo-control-panel-discard').live('click', function () {
-            /* simplest method to discard edits is to reload page */
-            window.location.reload();
-            /* should this be updated to reset all editable areas via ajax? */
+        self.$controlPanel.find('.hobo-control-panel-discard').live('click', function () {
+            if (self.saveQueue.length > 0) {
+                /* simplest method to discard edits is to reload page */
+                window.location.reload();
+                /* should this be updated to reset all editable areas via ajax? */
+                /* answer: yes */
+            }
+        });
+        self.$controlPanel.find('.hobo-control-panel-toggle-side').live('click', function () {
+            self.toggleControlPanelSide();
         });
     },
 
+    /* the inner html of the container gets re-drawn via calls to drawControlPanel */
+    initControlPanel: function () {
+        var self = this;
+        /* setup the admin control panel container */
+        jQuery('body').append('<div class="hobo-control-panel"></div>');
+        self.$controlPanel = jQuery('.hobo-control-panel');
+    },
+    
     drawControlPanel: function () {
         var self = this;
-        /* include the admin control panel */
+        var toggleSideIcon = (self.controlPanelLeft) ? 'mv-right.png' : 'mv-left.png';
         var controlPanel = '' +
-            '<div class="hobo-control-panel">' +
-                '<a class="hobo-control-panel-edit">' +
-                    '<img src="' + baseUrl + '/hobo/core/icons/edit.png" />' +
-                '</a> ' +
-                '<br />' +
-                '<a class="hobo-control-panel-save">' +
-                    '<img src="' + baseUrl + '/hobo/core/icons/save.png" />' +
-                '</a>'+
-                '<br />' +
-                '<a class="hobo-control-panel-discard">' +
-                    '<img src="' + baseUrl + '/hobo/core/icons/discard.png" />' +
-                '</a>'+
-            '</div>';
+            '<a class="hobo-control-panel-toggle-side">' +
+                '<img src="' + baseUrl + '/hobo/core/icons/' + toggleSideIcon + '" />' +
+            '</a>' +
+            '<a class="hobo-control-panel-edit">' +
+                '<img src="' + baseUrl + '/hobo/core/icons/edit.png" />' +
+            '</a> ' +
+            '<a class="hobo-control-panel-save">' +
+                '<img src="' + baseUrl + '/hobo/core/icons/save.png" />' +
+            '</a>' +
+            '<a class="hobo-control-panel-discard">' +
+                '<img src="' + baseUrl + '/hobo/core/icons/discard.png" />' +
+            '</a>';
 
-        /* remove cp if it already exists */
-        if (jQuery('.hobo-control-panel').length) {
-            jQuery('.hobo-control-panel').remove();
-        }
-
-        jQuery('body').append(controlPanel);
+        self.$controlPanel.html(controlPanel);
 
         /* icon treatments */
         if (! self.isEditMode) {
@@ -215,6 +232,41 @@ hobo.core = {
                 }
             });
         }
+    },
+
+    /* move the control panel to the left or right side */
+    toggleControlPanelSide: function () {
+        var self = this;
+        if (self.controlPanelLeft) {
+            self.mvControlPanelRight();
+        } else {
+            self.mvControlPanelLeft();
+        }
+        self.drawControlPanel();
+    },
+
+    mvControlPanelRight: function () {
+        var self = this;
+        var css = {
+            "left": "auto",
+            "right": "0px",
+            "border-right": "none",
+            "border-left": "1px solid #bbb"
+        };
+        self.$controlPanel.css(css);
+        self.controlPanelLeft = false;
+    },
+
+    mvControlPanelLeft: function () {
+        var self = this;
+        var css = {
+            "left": "0px",
+            "right": "auto",
+            "border-right": "1px solid #bbb",
+            "border-left": "none"
+        };
+        self.$controlPanel.css(css);
+        self.controlPanelLeft = true;
     },
 
     handleError: function (message) {
