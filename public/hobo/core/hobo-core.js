@@ -79,7 +79,9 @@ hobo.core = {
                 /* answer: yes */
             }
         });
-        self.$controlPanel.find('.hobo-control-panel-toggle-side').live('click', function () {
+        self.$controlPanel.find('.hobo-control-panel-toggle-side').live('mousedown', function (){
+            $(this).removeClass('inactive');
+        }).live('click', function () {
             self.toggleControlPanelSide();
         });
     },
@@ -112,12 +114,13 @@ hobo.core = {
         self.$controlPanel.html(controlPanel);
 
         /* icon treatments */
+        self.$controlPanel.find('.hobo-control-panel-toggle-side').addClass('inactive');
         if (! self.isEditMode) {
-            $('.hobo-control-panel-edit').addClass('inactive');
+            self.$controlPanel.find('.hobo-control-panel-edit').addClass('inactive');
         }
         if (self.saveQueue.length === 0) {
-            $('.hobo-control-panel-save').addClass('inactive');
-            $('.hobo-control-panel-discard').addClass('inactive');
+            self.$controlPanel.find('.hobo-control-panel-save').addClass('inactive');
+            self.$controlPanel.find('.hobo-control-panel-discard').addClass('inactive');
         }
     },
 
