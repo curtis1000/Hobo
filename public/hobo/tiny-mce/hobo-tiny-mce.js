@@ -3,7 +3,7 @@ var baseUrl = baseUrl || "";
 
 hobo.tinyMce = {
 
-    editAreaId: 'hobo-edit-tiny-mce',
+    tinyMceId: 'hobo-edit-tiny-mce',
 
     /* it's the editor() method's responsibility to populate hobo.core.editorContainer */
     editor: function () {
@@ -33,7 +33,7 @@ hobo.tinyMce = {
                         content = jQuery.trim(response.content);
                     } else {
                         // default to html on page
-                        content = jQuery(hobo.core.elementBeingEdited.$selector).html().trim();
+                        content = jQuery('[data-hobo-handle="' + hobo.core.elementBeingEdited.handle + '"]').html().trim();
                     }
 
                 }
@@ -43,7 +43,7 @@ hobo.tinyMce = {
         if (jQuery != undefined) {
             jQuery(hobo.core.editorContainer.html('<textarea id="hobo-edit-tiny-mce">' + content + '</textarea>'));
             tinyMCE.init({
-                id : self.editAreaId,
+                id : self.tinyMceId,
                 mode : "textareas",
                 
                 /* Size Settings */
@@ -72,7 +72,7 @@ hobo.tinyMce = {
      */
     getcontent: function () {
         var self = this;
-        return tinyMCE.get(self.editAreaId).getContent();
+        return tinyMCE.get(self.tinyMceId).getContent();
     },
 
     /* display(content) renders content to html if a transformation is necessary, for plain text, it isn't */

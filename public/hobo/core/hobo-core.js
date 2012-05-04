@@ -7,15 +7,6 @@ $(function () {
     hobo.core.init();
 });
 
-/* http://stackoverflow.com/questions/2419749/get-selected-elements-outer-html
- * We need this in order to set a selector that the content type js files can use
- */
-jQuery.fn.outerHTML = function(s) {
-    return s
-        ? this.before(s).remove()
-        : jQuery("<p>").append(this.eq(0).clone()).html();
-};
-
 hobo.core = {
 
     /* data object that tracks what the user is currently editing */
@@ -52,7 +43,9 @@ hobo.core = {
 
     initAdmin: function () {
         var self = this;
-        
+
+        self.setHandles();
+
         /* create control panel container */
         
         self.initControlPanel();
@@ -73,16 +66,43 @@ hobo.core = {
         });
         self.$controlPanel.find('.hobo-control-panel-discard').live('click', function () {
             if (self.saveQueue.length > 0) {
-                /* simplest method to discard edits is to reload page */
-                window.location.reload();
-                /* should this be updated to reset all editable areas via ajax? */
-                /* answer: yes */
+                self.discardEdits();
             }
         });
         self.$controlPanel.find('.hobo-control-panel-toggle-side').live('mousedown', function (){
             $(this).removeClass('inactive');
         }).live('click', function () {
             self.toggleControlPanelSide();
+        });
+        /* escape key */
+        jQuery(document).keyup(function(e) {
+            if (e.keyCode == 27 && self.isEditMode) {
+                self.exitEditMode();
+            }
+        });
+    },
+
+    /* Each editable area need a unique selector for jquery when editing the page,
+    *  so, for each element with data-hobo, pull out the handle and create a
+    *  handle="whatever" attribute on that eleement, then jquery can select with
+    *  [data-hobo-handle="whatever"]. Called from initAdmin()
+    */
+    setHandles: function () {
+        var self = this;
+        jQuery('body *').each(function () {
+            var dataHoboJSON = jQuery(this).attr('data-hobo');
+            if (dataHoboJSON != undefined) {
+                try {
+                    var dataHobo = eval('(' + dataHoboJSON + ')');
+                    if (typeof dataHobo == 'object') {
+                       if (dataHobo.handle != undefined) {
+                           $(this).attr('data-hobo-handle', dataHobo.handle);
+                       }
+                    }
+                } catch (error) {
+                    self.handleError(error.message);
+                }
+            }
         });
     },
 
@@ -128,7 +148,7 @@ hobo.core = {
         var self = this;
         self.isEditMode = true;
 
-        jQuery('body *').each(function () {
+        jQuery('[data-hobo-handle]').each(function () {
             var dataHoboJSON = jQuery(this).attr('data-hobo');
             if (dataHoboJSON != undefined) {
                 try {
@@ -143,8 +163,6 @@ hobo.core = {
                             dataHobo.routeName = routeName;
                             /* save method will reference this data, done referencing dataHobo at this point */
                             self.elementBeingEdited = dataHobo;
-                            /* Using literal html as the selector, can't set $(this) and reference it in plugin file */
-                            self.elementBeingEdited.$selector = jQuery(this).outerHTML();
                             /* create a generic reference to the plugin for the given content type */
                             /* example: hobo.plugin might now reference hobo.plainText */
                             hobo.plugin = eval('hobo.' + self.elementBeingEdited.contentType);
@@ -270,6 +288,12 @@ hobo.core = {
         };
         self.$controlPanel.css(css);
         self.controlPanelLeft = true;
+    },
+
+    discardEdits: function () {
+        var self = this;
+        // to-do make this ajax for each element in save queue
+        window.location.reload();
     },
 
     handleError: function (message) {

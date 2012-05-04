@@ -33,7 +33,7 @@ hobo.plainText = {
                         content = jQuery.trim(response.content);
                     } else {
                         // default to html on page
-                        content = jQuery(hobo.core.elementBeingEdited.$selector).html().trim();
+                        content = jQuery('[data-hobo-handle="' + hobo.core.elementBeingEdited.handle + '"]').html().trim();
                     }
 
                 }
