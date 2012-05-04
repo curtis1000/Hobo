@@ -23,7 +23,7 @@ hobo.tinyMce = {
 
         if (content == undefined) {
             /* make it synchronous since this step is conditional and subsequent code depends on it */
-            $.ajax({
+            jQuery.ajax({
                 async: false,
                 url: baseUrl + '/hobo/ajax/select-latest',
                 data: hobo.core.elementBeingEdited,
