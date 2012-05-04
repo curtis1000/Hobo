@@ -10,10 +10,11 @@ class Hobo_AjaxController extends Hobo_Controller_Action
     public function saveAction()
     {
         $params = array(
-            'routeName' => $this->_getParam('routeName', 'public-home'),
-            'handle'    => $this->_getParam('handle', 'main'),
-            'isGlobal'  => ($this->_getParam('isGlobal', 0) == 'true') ? 1 : 0, // the boolean comes through as string, filter to int
-            'content'   => $this->_getParam('content', ''),
+            'routeName'     => $this->_getParam('routeName'),
+            'handle'        => $this->_getParam('handle'),
+            'contentType'   => $this->_getParam('contentType'),
+            'isGlobal'      => ($this->_getParam('isGlobal', 0) == 'true') ? 1 : 0, // the boolean comes through as string, filter to int
+            'content'       => $this->_getParam('content'),
         );
 
         $contentTable = new Hobo_Db_Table_Content();

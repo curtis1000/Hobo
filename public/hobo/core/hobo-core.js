@@ -293,7 +293,25 @@ hobo.core = {
     discardEdits: function () {
         var self = this;
         // to-do make this ajax for each element in save queue
-        window.location.reload();
+        // window.location.reload();
+        for (var i=0; i<self.saveQueue.length; i++) {
+            jQuery.post(baseUrl + '/hobo/ajax/select-latest', self.saveQueue[i], function (response) {
+                // if there was a database query result
+                if (response.content != undefined) {
+                    try {
+                        /* create a generic reference to the plugin for the given content type */
+                        var plugin = eval('hobo.' + response.contentType);
+                        /* finally, revert the content */
+                        jQuery('[data-hobo-handle="' + response.handle + '"]').html(plugin.display(response.content));
+                    } catch (error) {
+                        self.handleError(error.message);
+                    }
+                }
+            });
+        }
+        /* flush saveQueue and exit edit mode */
+        self.saveQueue = [];
+        self.exitEditMode();
     },
 
     handleError: function (message) {

@@ -30,7 +30,7 @@ hobo.plainText = {
                 success: function (response) {
                     // if there was a database query result
                     if (response.content != undefined) {
-                        content = jQuery.trim(response.content);
+                        content = jQuery.trim(self.display(response.content));
                     } else {
                         // default to html on page
                         content = jQuery('[data-hobo-handle="' + hobo.core.elementBeingEdited.handle + '"]').html().trim();
