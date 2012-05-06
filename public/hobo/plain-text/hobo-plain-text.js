@@ -67,5 +67,20 @@ hobo.plainText = {
     /* display(content) renders content to html if a transformation is necessary, for plain text, it isn't */
     display: function (content) {
         return content;
+    },
+
+    /* if this method exists, the core modal will call it on window resize,
+     * after the modal's elements have been resized
+     */
+    resize: function () {
+       /* editArea doesn't have api methods for resizing, but it looks like
+        * we can just set css rules
+        */
+        var parentWidth = hobo.core.editorContainer.parent().width();
+        var parentHeight = hobo.core.editorContainer.parent().height();
+        var $iframe = hobo.core.editorContainer.find('iframe');
+        $iframe
+            .css('width', parentWidth)
+            .css('height', parentHeight -50);
     }
 };

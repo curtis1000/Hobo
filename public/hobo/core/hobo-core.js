@@ -7,12 +7,106 @@ $(function () {
     hobo.core.init();
 });
 
+hobo.modal = {
+    $overlay: null,
+    $modal: null,
+    $innerFrame: null,
+    $editorContainer: null,
+    $menu: null,
+    margin: 10,
+    overlayHtml:  '<div class="hobo-overlay"></div>',
+    modalHtml: '' +
+        '<div class="hobo-modal">' +
+            '<div class="hobo-modal-inner-frame">' +
+                '<div class="hobo-modal-editor-container"></div>' +
+                '<div class="hobo-modal-menu">' +
+                    '<a class="hobo-btn hobo-modal-cancel">Cancel</a>' +
+                    '<a class="hobo-btn hobo-modal-preview">Preview</a>' +
+                '</div>' +
+            '</div>' +
+        '</div>',
+    
+    open: function () {
+        var self = this;
+
+        /* prepend the page overlay */
+        $('body').prepend(self.overlayHtml);
+        self.$overlay = $('.hobo-overlay');
+
+        /* append the modal */
+        $('body').append(self.modalHtml);
+
+        /* cache jquery objects */
+        self.$modal = $('.hobo-modal');
+        self.$innerFrame = self.$modal.find('.hobo-modal-inner-frame');
+        self.$editorContainer = self.$innerFrame.find('.hobo-modal-editor-container');
+        self.$menu = self.$innerFrame.find('.hobo-modal-menu');
+
+        /* modal top and left are calculated based on height and width */
+        self.$modal
+            .css({"height":"70%","width":"70%"})
+            .css({"top": (($(window).height() - self.$modal.height()) / 2) + $(window).scrollTop()})
+            .css({"left": (($(window).width() - self.$modal.width()) / 2) + $(window).scrollLeft()});
+
+        /* need to calculate height of inner frame based on modal height */
+        self.$innerFrame
+            .css({"height": self.$modal.height() - (self.margin *2) + "px"});
+
+        /* need to calculate height of editor container (inner frame height - menu height)*/
+        self.$editorContainer
+            .css({"height": self.$innerFrame.height() - self.$menu.height() - self.margin + "px"});
+
+        /* now bind listeners */
+
+        /* since the modal width and height is a percetange, it resizes with the window,
+         * however everything else is calculated in pixels against that percentage, so
+         * when the window is resized, we need to re-calculate a bunch of things here
+         */
+        window.onresize = function (event) {
+            self.$modal
+                .css({"top": (($(window).height() - self.$modal.height()) / 2) + $(window).scrollTop()})
+                .css({"left": (($(window).width() - self.$modal.width()) / 2) + $(window).scrollLeft()});
+            self.$innerFrame
+                .css({"height": self.$modal.height() - (self.margin *2) + "px"});
+            self.$editorContainer
+                .css({"height": self.$innerFrame.height() - self.$menu.height() - self.margin + "px"});
+            /* notify the plugin */
+            hobo.plugin = eval('hobo.' + hobo.core.elementBeingEdited.contentType);
+            if (hobo.plugin != undefined && typeof hobo.plugin == 'object') {
+                if (hobo.plugin.resize != undefined && typeof hobo.plugin.resize == 'function') {
+                    hobo.plugin.resize();
+                }
+            }
+        };
+
+        self.$menu.find('.hobo-modal-cancel').live('click', function () {
+            self.cancel();
+        });
+        self.$menu.find('.hobo-modal-preview').live('click', function () {
+            self.preview();
+        });
+    },
+    /* cancel is just an alias to close */
+    cancel: function () {
+        var self = this;
+        self.close();
+    },
+    close: function () {
+        var self = this;
+        self.$modal.remove();
+        self.$overlay.remove();
+    },
+    preview: function () {
+        hobo.core.preview();
+    }
+};
+
 hobo.core = {
 
     /* data object that tracks what the user is currently editing */
     elementBeingEdited: null,
 
-    /* jQuery object referring to a div inside the colorbox modal, gets set once modal loads */
+    /* jQuery object referring to an element that content type plugins will populate with their editing ui */
     editorContainer: null,
 
     /* previewing changes adds/updates elements in the save queue, the save method will send all of these to the backend */
@@ -47,7 +141,6 @@ hobo.core = {
         self.setHandles();
 
         /* create control panel container */
-        
         self.initControlPanel();
         self.drawControlPanel();
         
@@ -167,18 +260,12 @@ hobo.core = {
                             /* example: hobo.plugin might now reference hobo.plainText */
                             hobo.plugin = eval('hobo.' + self.elementBeingEdited.contentType);
                             if (typeof hobo.plugin == 'object') {
-                                jQuery.colorbox({
-                                    html: '<div class="hobo-editor-container"></div>',
-                                    width:"80%",
-                                    height:"80%"
-                                });
-                                /* Once the modal is loaded */
-                                jQuery(document).bind('cbox_complete', function(){
-                                    /* plugins will reference this selector */
-                                    self.editorContainer = jQuery('.hobo-editor-container');
-                                    /* call the editor() method of the appropriate content type */
-                                    hobo.plugin.editor();
-                                });
+                                hobo.modal.open();
+                                /* setting the editorContainer reference allows plugins to always reference hobo.core.editorContainer,
+                                 * while the core can change what the editorContainer is (ie. changing the modal library)
+                                 */
+                                self.editorContainer = hobo.modal.$editorContainer;
+                                hobo.plugin.editor();
                             } else {
                                 self.handleError('hobo.' + self.elementBeingEdited.contentType + ' does not exist.')
                             }
@@ -201,7 +288,7 @@ hobo.core = {
         self.drawControlPanel();
     },
     
-    /* preview is called from colorbox, which has no knowledge of which content is being edited,
+    /* preview is called from the edit modal, which has no knowledge of which content is being edited,
      * data regarding which element is being previewed is in self.elementBeingEdited
      */
     preview: function () {
@@ -228,7 +315,7 @@ hobo.core = {
             /* clean up */
             self.elementBeingEdited = null;
             /* close modal */
-            jQuery.colorbox.close();
+            hobo.modal.close();
             /* redraw control panel */
             self.drawControlPanel();
         }

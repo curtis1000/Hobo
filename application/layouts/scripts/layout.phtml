@@ -37,8 +37,6 @@
       <!-- BEGIN HOBO HEAD CODE -->
       <!-- hobo content helper -->
       <link rel="stylesheet" href="hobo/core/hobo.css">
-      <!-- hobo requires colorbox -->
-      <link rel="stylesheet" href="hobo/core/colorbox/colorbox.css" />
       <!-- END HOBO HEAD CODE -->
   </head>
   <body>
@@ -69,8 +67,10 @@
   </footer>
   <!-- JavaScript at the bottom for fast page loading -->
 
-  <!-- Grab Google CDN's jQuery -->
+  <!-- Grab Google CDN's jQuery
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  -->
+  <script src="<?php echo $this->baseUrl(); ?>/assets/scripts/jquery-1.7.1.min.js"></script>
 
   <!-- BEGIN HOBO SCRIPT CODE -->
   <!-- hobo content helper -->
@@ -79,8 +79,6 @@
     var routeName = '<?php echo $this->routeName; ?>';
   </script>
   <script src="hobo/core/hobo-core.js"></script>
-  <!-- hobo requires colorbox -->
-  <script src="hobo/core/colorbox/jquery.colorbox.js"></script>
   <!-- END HOBO SCRIPT CODE -->
 
   <!-- end scripts -->
