@@ -5,7 +5,7 @@ hobo.tinyMce = {
 
     tinyMceId: 'hobo-edit-tiny-mce',
 
-    /* it's the editor() method's responsibility to populate hobo.core.editorContainer */
+    /* it's the editor() method's responsibility to populate hobo.core.$editorContainer */
     editor: function () {
         var self = this;
 
@@ -40,14 +40,14 @@ hobo.tinyMce = {
         }
 
         if (jQuery != undefined) {
-            jQuery(hobo.core.editorContainer.html('<textarea id="hobo-edit-tiny-mce">' + content + '</textarea>'));
+            jQuery(hobo.core.$editorContainer.html('<textarea id="hobo-edit-tiny-mce">' + content + '</textarea>'));
             tinyMCE.init({
                 id : self.tinyMceId,
                 mode : "textareas",
                 
                 /* Size Settings */
-                width  : hobo.core.editorContainer.parent().width(),
-                height : hobo.core.editorContainer.parent().height() - 50,
+                width  : hobo.core.$editorContainer.parent().width(),
+                height : hobo.core.$editorContainer.parent().height() - 50,
                 
                 /* Plugins */
                 plugins : "autolink,lists,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",

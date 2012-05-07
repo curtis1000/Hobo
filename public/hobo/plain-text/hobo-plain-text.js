@@ -41,15 +41,15 @@ hobo.plainText = {
         }
 
         if (jQuery != undefined) {
-            jQuery(hobo.core.editorContainer.html('<textarea id="hobo-edit-plain-text">' + content + '</textarea>'));
+            jQuery(hobo.core.$editorContainer.html('<textarea id="hobo-edit-plain-text">' + content + '</textarea>'));
             editAreaLoader.init({
                 id : self.editAreaId,
                 syntax: "html",
                 start_highlight: true,
                 word_wrap: true,
                 allow_toggle: false,
-                min_width: hobo.core.editorContainer.parent().width(),
-                min_height: hobo.core.editorContainer.parent().height() - 50,
+                min_width: hobo.core.$editorContainer.parent().width(),
+                min_height: hobo.core.$editorContainer.parent().height() - 50,
                 toolbar: "search, go_to_line, |, undo, redo, |, help"
             });
         }
@@ -76,9 +76,9 @@ hobo.plainText = {
        /* editArea doesn't have api methods for resizing, but it looks like
         * we can just set css rules
         */
-        var parentWidth = hobo.core.editorContainer.parent().width();
-        var parentHeight = hobo.core.editorContainer.parent().height();
-        var $iframe = hobo.core.editorContainer.find('iframe');
+        var parentWidth = hobo.core.$editorContainer.parent().width();
+        var parentHeight = hobo.core.$editorContainer.parent().height();
+        var $iframe = hobo.core.$editorContainer.find('iframe');
         $iframe
             .css('width', parentWidth)
             .css('height', parentHeight -50);

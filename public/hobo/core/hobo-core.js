@@ -107,7 +107,7 @@ hobo.core = {
     elementBeingEdited: null,
 
     /* jQuery object referring to an element that content type plugins will populate with their editing ui */
-    editorContainer: null,
+    $editorContainer: null,
 
     /* previewing changes adds/updates elements in the save queue, the save method will send all of these to the backend */
     saveQueue: [],
@@ -264,7 +264,7 @@ hobo.core = {
                                 /* setting the editorContainer reference allows plugins to always reference hobo.core.editorContainer,
                                  * while the core can change what the editorContainer is (ie. changing the modal library)
                                  */
-                                self.editorContainer = hobo.modal.$editorContainer;
+                                self.$editorContainer = hobo.modal.$editorContainer;
                                 hobo.plugin.editor();
                             } else {
                                 self.handleError('hobo.' + self.elementBeingEdited.contentType + ' does not exist.')
