@@ -13,6 +13,8 @@ hobo.modal = {
     $innerFrame: null,
     $editorContainer: null,
     $menu: null,
+    $cancel: null,
+    $preview: null,
     margin: 10,
     overlayHtml:  '<div class="hobo-overlay"></div>',
     modalHtml: '' +
@@ -41,6 +43,8 @@ hobo.modal = {
         self.$innerFrame = self.$modal.find('.hobo-modal-inner-frame');
         self.$editorContainer = self.$innerFrame.find('.hobo-modal-editor-container');
         self.$menu = self.$innerFrame.find('.hobo-modal-menu');
+        self.$cancel = self.$menu.find('.hobo-modal-cancel');
+        self.$preview = self.$menu.find('.hobo-modal-preview');
 
         /* modal top and left are calculated based on height and width */
         self.$modal
@@ -57,12 +61,16 @@ hobo.modal = {
             .css({"height": self.$innerFrame.height() - self.$menu.height() - self.margin + "px"});
 
         /* now bind listeners */
+        self.bind();
+    },
 
+    bind: function () {
+        var self = this;
         /* since the modal width and height is a percetange, it resizes with the window,
          * however everything else is calculated in pixels against that percentage, so
          * when the window is resized, we need to re-calculate a bunch of things here
          */
-        window.onresize = function (event) {
+        jQuery(window).resize(function (event) {
             self.$modal
                 .css({"top": (($(window).height() - self.$modal.height()) / 2) + $(window).scrollTop()})
                 .css({"left": (($(window).width() - self.$modal.width()) / 2) + $(window).scrollLeft()});
@@ -77,15 +85,24 @@ hobo.modal = {
                     hobo.plugin.resize();
                 }
             }
-        };
+        });
 
-        self.$menu.find('.hobo-modal-cancel').live('click', function () {
+        self.$cancel.live('click', function () {
             self.cancel();
         });
-        self.$menu.find('.hobo-modal-preview').live('click', function () {
+        self.$preview.live('click', function () {
             self.preview();
         });
     },
+
+    /* unbind modal listeners, called from close */
+    unbind: function () {
+        var self = this;
+        jQuery(window).unbind('resize');
+        self.$cancel.die('click');
+        self.$preview.die('click');
+    },
+
     /* cancel is just an alias to close */
     cancel: function () {
         var self = this;
@@ -93,6 +110,7 @@ hobo.modal = {
     },
     close: function () {
         var self = this;
+        self.unbind();
         self.$modal.remove();
         self.$overlay.remove();
     },
