@@ -13,6 +13,7 @@ class Hobo_Db_Table_Content extends Hobo_Db_Table
               `isGlobal` tinyint(4) NOT NULL DEFAULT '0',
               `routeName` varchar(128) DEFAULT NULL,
               `handle` varchar(255) NOT NULL,
+              `contentType` VARCHAR( 64 ) NOT NULL,
               `content` text,
               `revision` int(11) NOT NULL,
               `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -283,7 +283,35 @@ hobo.core = {
                                  * while the core can change what the editorContainer is (ie. changing the modal library)
                                  */
                                 self.$editorContainer = hobo.modal.$editorContainer;
-                                hobo.plugin.editor();
+
+                                /* pass in the appropriate content data (pre display()) to the plugin's editor() method */
+
+                                /* What content should be loaded into the editor?
+                                 * - If there is data in the saveQueue, use that
+                                 * - Else, query db
+                                 * - Else undefined (plugin will determine how to handle this situation)
+                                 */
+                                var content;
+                                for (var i=0; i<self.saveQueue.length; i++) {
+                                    if (self.saveQueue[i].handle == self.elementBeingEdited.handle) {
+                                        content = jQuery.trim(self.saveQueue[i].content);
+                                    }
+                                }
+                                if (content == undefined) {
+                                    /* make it synchronous since this step is conditional and subsequent code depends on it */
+                                    jQuery.ajax({
+                                        async: false,
+                                        url: baseUrl + '/hobo/ajax/select-latest',
+                                        data: self.elementBeingEdited,
+                                        success: function (response) {
+                                            // if there was a database query result
+                                            if (response.content != undefined) {
+                                                content = response.content;
+                                            }
+                                        }
+                                    });
+                                }
+                                hobo.plugin.editor(content);
                             } else {
                                 self.handleError('hobo.' + self.elementBeingEdited.contentType + ' does not exist.')
                             }
