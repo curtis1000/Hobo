@@ -16,7 +16,7 @@ class Hobo_Session_Manager
 
     public function destroy()
     {
-        $session = $this->getSession();
+        $session = $this->get();
         $session = new stdClass();
     }
 }

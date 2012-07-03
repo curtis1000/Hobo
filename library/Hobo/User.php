@@ -33,4 +33,9 @@ class Hobo_User
             return $this->_session->username;
         }
     }
+
+    public function logOut()
+    {
+        $this->_session->destroy();
+    }
 }
