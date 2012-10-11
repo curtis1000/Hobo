@@ -1,5 +1,6 @@
 public/.htaccess
 data/*
+application/configs/application.ini
 /nbproject/private/
 /nbproject/*
 .idea/*
