@@ -49,6 +49,18 @@ class Hobo_Bootstrap extends Zend_Application_Module_Bootstrap
         );
 
         $router->addRoute(
+            "hobo-ajax-select-all-versions",
+            new Zend_Controller_Router_Route(
+                "/hobo/ajax/select-all-versions",
+                array(
+                    "module"     => "hobo",
+                    "controller" => "ajax",
+                    "action"     => "select-all-versions",
+                )
+            )
+        );
+
+        $router->addRoute(
             "hobo-installer",
             new Zend_Controller_Router_Route(
                 "/hobo/installer",

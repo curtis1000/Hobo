@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/BEAR/!svn/ver/769/projects/BEAR/trunk/library/Bear/Controller/Action/Helper
+END
+AssertAuthHasIdentity.php
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/BEAR/!svn/ver/675/projects/BEAR/trunk/library/Bear/Controller/Action/Helper/AssertAuthHasIdentity.php
+END
+AssertResourceExists.php
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/BEAR/!svn/ver/409/projects/BEAR/trunk/library/Bear/Controller/Action/Helper/AssertResourceExists.php
+END
+AssertHasParameter.php
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/BEAR/!svn/ver/769/projects/BEAR/trunk/library/Bear/Controller/Action/Helper/AssertHasParameter.php
+END
+CurrentUser.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/BEAR/!svn/ver/754/projects/BEAR/trunk/library/Bear/Controller/Action/Helper/CurrentUser.php
+END
+AssertIsAllowed.php
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/BEAR/!svn/ver/675/projects/BEAR/trunk/library/Bear/Controller/Action/Helper/AssertIsAllowed.php
+END
+RequestTime.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/BEAR/!svn/ver/767/projects/BEAR/trunk/library/Bear/Controller/Action/Helper/RequestTime.php
+END

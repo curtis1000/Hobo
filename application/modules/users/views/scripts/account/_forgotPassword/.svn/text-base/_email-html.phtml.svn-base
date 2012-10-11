@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Reset Password</title>
+</head>
+<body>
+    <div id="wrapper" style="color:#6B6B6B;font-family:Arial,Helvetica,sans-serif;font-size:11px;">
+        <div id="content" style="padding:20px;">
+            <!-- insert email title -->
+            <h1 style="margin:0 0 12px 0;font-size:16px;color:#194880;font-weight:bold;">Password Reset</h1>
+            <!-- insert content -->
+<?php $url = $this->serverUrl($this->url(array("module" => "users", "controller" => "account", "action" => "reset-password", "code" => $this->user->forgotPasswordCode), "default", true)); ?>
+            <p>Please click the following link to reset your password.</p>
+            <p><a href="<?php echo $url; ?>" style="color:#2C49A8;text-decoration:underline;"><?php echo $url; ?></a></p>
+        </div>
+        <div id="footer" style="border-top:2px solid #969696;padding:10px 20px;text-align:center;font-size:10px;">
+            <span>Copyright <?php echo date('Y'); ?>. All Rights Reserved.</span>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,4 @@
+Reset Password
+
+Please click the following link to reset your password.
+<?php echo $this->serverUrl($this->url(array("module" => "users", "controller" => "account", "action" => "reset-password", "code" => $this->user->forgotPasswordCode), "default", true)); ?>

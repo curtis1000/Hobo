@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/BEAR/!svn/ver/746/projects/BEAR/trunk/library/Bear/Facebook/Controller/Action/Helper
+END
+Facebook.php
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/BEAR/!svn/ver/746/projects/BEAR/trunk/library/Bear/Facebook/Controller/Action/Helper/Facebook.php
+END
+IsPageAdmin.php
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/BEAR/!svn/ver/734/projects/BEAR/trunk/library/Bear/Facebook/Controller/Action/Helper/IsPageAdmin.php
+END
+IsPageLiked.php
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/BEAR/!svn/ver/734/projects/BEAR/trunk/library/Bear/Facebook/Controller/Action/Helper/IsPageLiked.php
+END
+AssertValidAccessToken.php
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/BEAR/!svn/ver/739/projects/BEAR/trunk/library/Bear/Facebook/Controller/Action/Helper/AssertValidAccessToken.php
+END

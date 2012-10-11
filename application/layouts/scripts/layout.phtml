@@ -12,8 +12,10 @@
       <meta name="description" content="">
       <meta name="author" content="">
 
-      <!-- Le styles -->
+      <!-- Le styles
       <link href="<?php echo $this->baseUrl(); ?>/bootstrap/css/bootstrap.css" rel="stylesheet">
+      -->
+      <link href="http://bootswatch.com/spacelab/bootstrap.min.css" rel="stylesheet">
       <style type="text/css">
           body {
               padding-top: 60px;
@@ -48,23 +50,25 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
               </a>
-              <a class="brand" href="#">Project name</a>
+              <a class="brand" href="#">Hobo</a>
               <div class="nav-collapse">
                   <ul class="nav">
-                      <li class="active"><a href="#">Home</a></li>
-                      <li><a href="#about">About</a></li>
+                      <li class="active"><a href="#">Overview</a></li>
+                      <li><a href="#try">Try it out</a></li>
                       <li><a href="#contact">Contact</a></li>
                   </ul>
               </div><!--/.nav-collapse -->
           </div>
       </div>
   </div>
+
+
   <div class="container">
     <?php echo $this->layout()->content; ?>
+      <footer data-hobo='{"isGlobal": true, "handle": "footer", "contentType": "plainText"}'>
+          <p>&copy; Hobo Project <?php echo date('Y'); ?></p>
+      </footer>
   </div>
-  <footer data-hobo='{"isGlobal": true, "handle": "footer", "contentType": "plainText"}'>
-      <p>&copy; Company 2012</p>
-  </footer>
   <!-- JavaScript at the bottom for fast page loading -->
 
   <!-- Grab Google CDN's jQuery

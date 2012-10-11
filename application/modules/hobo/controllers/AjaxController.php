@@ -4,7 +4,8 @@ class Hobo_AjaxController extends Hobo_Controller_Action
 {
     public function isAdminAction()
     {
-        $this->_helper->json($this->_helper->user->isAdmin());
+        $hoboUser = new Hobo_User();
+        $this->_helper->json($hoboUser->isLoggedIn());
     }
     
     public function saveAction()
@@ -41,5 +42,24 @@ class Hobo_AjaxController extends Hobo_Controller_Action
             $rowArray = array();
         }
         $this->_helper->json($rowArray);
+    }
+
+    public function selectAllVersionsAction()
+    {
+        // query database for content
+        $params = array(
+            'isGlobal'  => ($this->_getParam('isGlobal', 0) == 'true') ? 1 : 0, // the boolean comes through as string, filter to int
+            'routeName' => $this->_getParam('routeName'),
+            'handle'    => $this->_getParam('handle'),
+        );
+
+        $contentTable = new Hobo_Db_Table_Content();
+        $rows = $contentTable->selectAllVersions($params);
+        $rows = $rows->toArray();
+        foreach ($rows as &$row) {
+            // pretty-up the date format
+            $row['created'] = date('F jS, Y, g:i A', strtotime($row['created']));
+        }
+        $this->_helper->json($rows);
     }
 }

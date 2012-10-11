@@ -103,8 +103,18 @@
 
 .hobo-modal-menu {
     position:absolute;
+}
+
+.bottom {
     bottom:0px;
+}
+
+.right {
     right:0px;
+}
+
+.left {
+    left:0px;
 }
 
 .hobo-modal-menu a {
@@ -185,3 +195,13 @@
     transition: background-position 0.1s linear;
 }
 /* end twitter bootstrap .btn code */
+
+.hobo-versions > li {
+    border-bottom:1px solid #ddd;
+    list-style: none;
+}
+
+.hobo-versions > li:hover {
+    cursor:pointer;
+    background-color: #dedede;
+}

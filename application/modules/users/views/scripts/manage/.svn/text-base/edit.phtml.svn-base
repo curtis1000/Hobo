@@ -1,0 +1,13 @@
+<div class="edit_user">
+    <h3>Edit User</h3>
+
+    <?php echo $this->editForm; ?>
+</div>
+
+<div class="change_password">
+    <h3>Change Password</h3>
+
+    <?php echo $this->changePasswordForm->setAttrib('id','change_password'); ?>
+
+    <a href="<?php echo $this->url(array('action' => 'list', 'id' => null), 'default', false); ?>">Cancel</a>
+</div>

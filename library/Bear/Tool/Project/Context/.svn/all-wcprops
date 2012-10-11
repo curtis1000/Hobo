@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/BEAR/!svn/ver/674/projects/BEAR/trunk/library/Bear/Tool/Project/Context
+END
+ApplicationConfigFile.php
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/BEAR/!svn/ver/515/projects/BEAR/trunk/library/Bear/Tool/Project/Context/ApplicationConfigFile.php
+END
+HtaccessFile.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/BEAR/!svn/ver/674/projects/BEAR/trunk/library/Bear/Tool/Project/Context/HtaccessFile.php
+END
+ViewScriptFile.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/BEAR/!svn/ver/412/projects/BEAR/trunk/library/Bear/Tool/Project/Context/ViewScriptFile.php
+END
+ProjectLibraryDirectory.php
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/BEAR/!svn/ver/410/projects/BEAR/trunk/library/Bear/Tool/Project/Context/ProjectLibraryDirectory.php
+END
+HtaccessDistFile.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/BEAR/!svn/ver/674/projects/BEAR/trunk/library/Bear/Tool/Project/Context/HtaccessDistFile.php
+END
+LayoutScriptFile.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/BEAR/!svn/ver/520/projects/BEAR/trunk/library/Bear/Tool/Project/Context/LayoutScriptFile.php
+END
+ControllerFile.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/BEAR/!svn/ver/410/projects/BEAR/trunk/library/Bear/Tool/Project/Context/ControllerFile.php
+END
+SqlDirectory.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/BEAR/!svn/ver/410/projects/BEAR/trunk/library/Bear/Tool/Project/Context/SqlDirectory.php
+END

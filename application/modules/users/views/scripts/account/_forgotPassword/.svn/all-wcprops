@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/BEAR/!svn/ver/756/projects/BEAR/trunk/modules/users/views/scripts/account/_forgotPassword
+END
+_email-html.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/BEAR/!svn/ver/756/projects/BEAR/trunk/modules/users/views/scripts/account/_forgotPassword/_email-html.phtml
+END
+_email-text.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/BEAR/!svn/ver/756/projects/BEAR/trunk/modules/users/views/scripts/account/_forgotPassword/_email-text.phtml
+END

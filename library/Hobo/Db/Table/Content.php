@@ -66,4 +66,19 @@ class Hobo_Db_Table_Content extends Hobo_Db_Table
 
         return $revision;
     }
+
+    /**
+     * @param $params
+     * @return null|Zend_Db_Table_Row_Abstract
+     */
+    public function selectAllVersions($params)
+    {
+        $select = $this->select()
+            ->where('isGlobal = ?', $params['isGlobal'])
+            ->where('routeName = ?', $params['routeName'])
+            ->where('handle = ?', $params['handle'])
+            ->order('id desc');
+
+        return $this->fetchAll($select);
+    }
 }

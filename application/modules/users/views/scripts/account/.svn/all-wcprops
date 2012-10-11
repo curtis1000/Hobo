@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/BEAR/!svn/ver/757/projects/BEAR/trunk/modules/users/views/scripts/account
+END
+forgot-password-thank-you.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/BEAR/!svn/ver/756/projects/BEAR/trunk/modules/users/views/scripts/account/forgot-password-thank-you.phtml
+END
+forgot-password.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/BEAR/!svn/ver/756/projects/BEAR/trunk/modules/users/views/scripts/account/forgot-password.phtml
+END
+reset-password.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/BEAR/!svn/ver/756/projects/BEAR/trunk/modules/users/views/scripts/account/reset-password.phtml
+END
+login.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/BEAR/!svn/ver/756/projects/BEAR/trunk/modules/users/views/scripts/account/login.phtml
+END
+logout.phtml
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/BEAR/!svn/ver/756/projects/BEAR/trunk/modules/users/views/scripts/account/logout.phtml
+END

@@ -46,11 +46,11 @@ hobo.tinyMce = {
 
     },
 
-    /* getcontent() returns data for saveQueue, this is what will be stored in the database,
+    /* getContent() returns data for saveQueue, this is what will be stored in the database,
      * could be a serialized object or straight html, the display() method will build html from this
      * if necessary
      */
-    getcontent: function () {
+    getContent: function () {
         var self = this;
         return tinyMCE.get(self.tinyMceId).getContent();
     },

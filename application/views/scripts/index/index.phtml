@@ -1,31 +1,57 @@
+<header class="jumbotron subhead">
+    <h1>Hobo is a CMS Component for Zend Framework</h1>
+</header>
+<p class="lead">The Hobo project is a collection of javascript, a Zend Framework Module, and supporting PHP libraries.</p>
+<h3>Project Goals:</h3>
+<ul>
+    <li>Provide in-context editing tools for Zend Framework developers to integrate with new or old projects</li>
+    <li>Define editable areas in view files</li>
+    <li>Make it easy for developers to create custom content types</li>
+    <li>Integrate with your existing user authentication system</li>
+</ul>
 
-    <!-- Main hero unit for a primary marketing message or call to action -->
-    <div class="hero-unit">
-        <h1 data-hobo='{"isGlobal": false, "handle": "title", "contentType": "plainText"}'>Hello, world!</h1>
-        <div data-hobo='{"isGlobal": false, "handle": "introText", "contentType": "tinyMce"}'>
-             <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-        </div>
-        <p><a class="btn btn-primary btn-large" data-hobo='{"isGlobal": false, "handle": "header-button", "contentType": "plainText"}'>Learn more &raquo;</a></p>
-    </div>
+<h2>Installation</h2>
+<ol>
+    <li>Download the <a href="<?php echo $this->baseUrl(); ?>/builds/<?php echo $this->latestBuild; ?>">latest package</a>
+    and copy all files into your Zend Framework project.
+    <pre>
+wget <?php echo $this->serverUrl() . $this->baseUrl(); ?>/builds/<?php echo $this->latestBuild; ?>
 
-    <!-- Example row of columns -->
-    <div class="row">
-        <div class="span4">
-            <h2>Heading</h2>
-            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-            <p><a class="btn" href="#">View details &raquo;</a></p>
-        </div>
-        <div class="span4">
-            <h2>Heading</h2>
-            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-            <p><a class="btn" href="#">View details &raquo;</a></p>
-        </div>
-        <div class="span4">
-            <h2>Heading</h2>
-            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-            <p><a class="btn" href="#">View details &raquo;</a></p>
-        </div>
-    </div>
+tar xvf ./<?php echo $this->latestBuild; ?>
+</pre>
+    </li>
+    <li>
+        Set the following config values in your application.ini file. Depending on your existing configuration,
+        you may either need to add or change the following lines:
+<pre>
+autoloaderNamespaces[] = "Hobo_"
+resources.frontController.actionHelperPaths.Hobo_Controller_Action_Helper = "Hobo/Controller/Action/Helper"
+resources.frontController.returnResponse = true
+resources.frontController.moduleDirectory = APPLICATION_PATH "/modules"
+resources.modules = On
+</pre>
+    </li>
+    <li>
+        Ensure that you've correctly configured a mysql database connection in application.ini.
+    </li>
+    <li>You're now ready to visit the hobo installer at: /hobo/installer. The installer will create the database tables
+    necessary for operation only if they don't already exist.</li>
+</ol>
+<h2>Setting up editable areas</h2>
+Editable areas are defined in view files. The key is to add an html5 data attribute to any element that is intended to contain managed content. This element is called data-hobo, and its value is a json encoded object. This json defines three properties:
+<ul>
+<li>isGlobal: Is this item global? Set to true for any piece of content that will be used across multiple pages.</li>
+<li>handle: This is the internal title for the piece of content, (ex. footer).</li>
+<li>contentType: Defines which plugin will handle editing, saving and displaying this content data (ex. tinyMce).</li>
+    <pre>
+        <?php echo htmlspecialchars(
+        '<!-- This content uses a plain text editor.-->
+<h1 data-hobo=\'{"isGlobal": false, "handle": "title", "contentType": "plainText"}\'>
+        </h1>
 
-    <hr>
-
+        <div data-hobo=\'{"isGlobal": false, "handle": "introText", "contentType": "tinyMce"}\'>
+            This content uses a rich text editor. The first time this view files is loaded, Hobo will store content that resides 
+            in this editable area as the initial version.
+        </div>'); ?>
+    </pre>
+ <h2>Creating plugins</h2>

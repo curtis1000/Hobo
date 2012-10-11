@@ -21,7 +21,10 @@ hobo.modal = {
         '<div class="hobo-modal">' +
             '<div class="hobo-modal-inner-frame">' +
                 '<div class="hobo-modal-editor-container"></div>' +
-                '<div class="hobo-modal-menu">' +
+                '<div class="hobo-modal-menu bottom left">' +
+                    '<a class="hobo-btn hobo-modal-versions">Versions</a>' +
+                '</div>' +
+                '<div class="hobo-modal-menu bottom right">' +
                     '<a class="hobo-btn hobo-modal-cancel">Cancel</a>' +
                     '<a class="hobo-btn hobo-modal-preview">Preview</a>' +
                 '</div>' +
@@ -43,6 +46,7 @@ hobo.modal = {
         self.$innerFrame = self.$modal.find('.hobo-modal-inner-frame');
         self.$editorContainer = self.$innerFrame.find('.hobo-modal-editor-container');
         self.$menu = self.$innerFrame.find('.hobo-modal-menu');
+        self.$versions = self.$menu.find('.hobo-modal-versions');
         self.$cancel = self.$menu.find('.hobo-modal-cancel');
         self.$preview = self.$menu.find('.hobo-modal-preview');
 
@@ -87,9 +91,10 @@ hobo.modal = {
             }
         });
 
-        self.$cancel.live('click', function () {
-            self.cancel();
+        self.$versions.live('click', function () {
+            self.versions();
         });
+        self.bindCancel();
         self.$preview.live('click', function () {
             self.preview();
         });
@@ -99,10 +104,24 @@ hobo.modal = {
     unbind: function () {
         var self = this;
         jQuery(window).unbind('resize');
-        self.$cancel.die('click');
+        self.unbindCancel();
         self.$preview.die('click');
     },
-
+    // put these cancel button methods into their own method because they're also called from core when displaying
+    // versions menu and we want to temporarily redefine cancel button click handler
+    bindCancel: function () {
+        var self = this;
+        self.$cancel.live('click', function () {
+            self.cancel();
+        });
+    },
+    unbindCancel: function () {
+        var self = this;
+        self.$cancel.die('click');
+    },
+    versions: function () {
+        hobo.core.versions();
+    },
     /* cancel is just an alias to close */
     cancel: function () {
         var self = this;
@@ -116,6 +135,15 @@ hobo.modal = {
     },
     preview: function () {
         hobo.core.preview();
+    },
+    isOpen: function () {
+        var self = this;
+        if (self.$modal) {
+            return self.$modal.length;
+        } else {
+            return false;
+        }
+
     }
 };
 
@@ -187,9 +215,15 @@ hobo.core = {
         });
         /* escape key */
         jQuery(document).keyup(function(e) {
-            if (e.keyCode == 27 && self.isEditMode) {
-                self.exitEditMode();
+            if (e.keyCode == 27) {
+                if (hobo.modal.isOpen()) {
+                     hobo.modal.close();
+                }
+                if (self.isEditMode) {
+                    self.exitEditMode();
+                }
             }
+
         });
     },
 
@@ -327,6 +361,67 @@ hobo.core = {
         self.drawControlPanel();
     },
 
+    versions: function () {
+        var self = this;
+
+        // store a temp copy of the unsaved edit in case the user cancels choosing an old version
+        var temp = hobo.plugin.getContent();
+
+        // draw the version history menu in the modal
+        jQuery.ajax({
+            async: true,
+            url: baseUrl + '/hobo/ajax/select-all-versions',
+            data: self.elementBeingEdited,
+            success: function (versions) {
+                var menu = '<h3>Versions</h3>' +
+                    '<ul class="hobo-versions">';
+                for (var i=0; i<versions.length; i++) {
+                    menu += '' +
+                        '<li data-version="' + versions[i].id + '">v' +
+                            versions[i].id + ' ' +
+                            versions[i].created +
+                        '</li>';
+                }
+                menu += '</ul>';
+                hobo.modal.$editorContainer.html(menu);
+
+                // redefine cancel button
+                hobo.modal.unbindCancel();
+                hobo.modal.$cancel.live('click', function(){
+                    // put the temp content back in the editor
+                    hobo.plugin.editor(temp);
+                    // detach versions menu cancel button handler
+                    hobo.modal.$cancel.die('click');
+                    // re-attach original cancel button handler
+                    hobo.modal.bindCancel();
+                });
+
+                // detach versions menu click handler that may be lingering
+                $('[data-version]').die('click');
+
+                $('[data-version]').live('click', function () {
+                    console.log('clicked a data version');
+                    var version;
+                    for (var i=0; i<versions.length; i++) {
+                        console.log('if '+versions[i].id+' == '+$(this).attr('data-version'));
+                        if (versions[i].id == $(this).attr('data-version')) {
+                            version = versions[i];
+                            break;
+                        }
+                    }
+                    // put the selected version's content in the editor
+                    hobo.plugin.editor(version.content);
+                    // detach versions menu cancel button handler
+                    hobo.modal.$cancel.die('click');
+                    // re-attach original cancel button handler
+                    hobo.modal.bindCancel();
+                });
+
+                // unbind cancel button, define a new handler to deal with canceling the version roll-back
+            }
+        });
+    },
+
     exitEditMode: function () {
         var self = this;
         self.isEditMode = false;
@@ -343,7 +438,7 @@ hobo.core = {
         /* example: hobo.plugin might now reference hobo.plainText */
         hobo.plugin = eval('hobo.' + self.elementBeingEdited.contentType);
         if (typeof hobo.plugin == 'object') {
-            var content = hobo.plugin.getcontent();
+            var content = hobo.plugin.getContent();
             self.elementBeingEdited.content = content;
             /* if an instance of this handle already exists in saveQueue, delete it, we are about to add an updated version */
             for (i=0; i<self.saveQueue.length; i++) {

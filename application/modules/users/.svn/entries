@@ -1,0 +1,77 @@
+10
+
+dir
+806
+https://svn.sierrabravo.net/BEAR/projects/BEAR/trunk/modules/users
+https://svn.sierrabravo.net/BEAR
+
+
+
+2011-12-15T04:52:15.195134Z
+757
+kness
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+7fb8c30e-162d-4086-abeb-811cf50eb4a1
+
+sql
+dir
+
+models
+dir
+
+Bootstrap.php
+file
+
+
+
+
+2012-07-03T04:05:30.938839Z
+a848b009b9551532085aa36c86886b43
+2011-12-15T04:52:15.195134Z
+757
+kness
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+6438
+
+controllers
+dir
+
+forms
+dir
+
+views
+dir
+

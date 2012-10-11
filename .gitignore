@@ -2,7 +2,8 @@ public/.htaccess
 data/*
 /nbproject/private/
 /nbproject/*
-
+.idea/*
+modules/users/*
 # OS generated files #
 ######################
 .DS_Store*

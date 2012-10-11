@@ -1,0 +1,23 @@
+<h3>Login</h3>
+<h5>admin@sierrabravo.net / testing</h5>
+    <br />
+    <br />
+
+    <style>
+        .form-errors {
+            display: none;
+        }
+        .bear-form {
+            list-style: none;
+            margin:0;
+        }
+        .errors {
+            margin:0;
+        }
+        .errors li {
+            list-style: none;
+        }
+    </style>
+<?php echo $this->form; ?>
+
+<a href="<?php echo $this->url(array('action' => 'forgot-password')); ?>">Forgot password?</a>
