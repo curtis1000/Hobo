@@ -1,3 +1,0 @@
-<h3>Add User</h3>
-
-<?php echo $this->form; ?>

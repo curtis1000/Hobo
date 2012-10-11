@@ -1,5 +1,0 @@
-<h3>Login</h3>
-
-<?php echo $this->form; ?>
-
-<a href="<?php echo $this->url(array('action' => 'forgot-password')); ?>">Forgot password?</a>
